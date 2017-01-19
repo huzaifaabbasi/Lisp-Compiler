@@ -6,11 +6,14 @@
 	int firstword = 0;
 %}
 anything [a-zA-Z0-9!@#$%^&*\-+_]
+variable ([0-9]+[^0-9() ]{anything}*)|([a-zA-Z]{anything}*)
 %%
+
+(setq)[ ]+{anything}
 
 [\"][^\"]*[\"] {
 	printIndent(indentation);
-	
+
 	printf("%d %d\tSTRING %s\n",lineNumber,charCount,yytext);
 	charCount+=yyleng;
 }
@@ -36,7 +39,7 @@ anything [a-zA-Z0-9!@#$%^&*\-+_]
 		charCount++;
 		printIndent(indentation);
 		printf("%d %d\tNUMBER %s\n",lineNumber,charCount,yytext);
-}	
+}
 
 ([0-9]+[^0-9() ]{anything}*)|([a-zA-Z]{anything}*) {
 	if(firstword == 1)
@@ -52,10 +55,10 @@ anything [a-zA-Z0-9!@#$%^&*\-+_]
 		printf("%d %d\tIDENTIFIER %s\n",lineNumber,charCount,yytext);
 		charCount+= yyleng;
 	}
-	
+
 }
-	
-[+\-*/=><] {	
+
+[+\-*/=><] {
 		charCount++;
 		printIndent(indentation);
 		firstword = 0;
@@ -71,19 +74,19 @@ void printIndent(int i){
 	}
 }
 int main(int argc,char** argv){
-	
-	           
+
+
 	if (argc > 1)
 	{
 	    FILE *file;
 	    file = fopen(argv[1], "r");
 	    if (!file)
 	    {
-	       
+
 	        exit(1);
 	    }
 	    yyin = file;
 	}
-	yylex();	
+	yylex();
 	return 0;
 }
